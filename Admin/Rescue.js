@@ -147,37 +147,46 @@ const SkeletonLoader = () => (
         }, [adminMobileNumber]);
         
       
-        const fetchRescuers = () => {
-          const rescuersRef = ref(database, 'rescuers');
+        const fetchRescuers = (reportCity) => {
+          const rescuersRef = ref(database, "rescuers");
           onValue(rescuersRef, (snapshot) => {
             const data = snapshot.val();
-             // Log the fetched data
-        
             if (data) {
-              const filteredRescuers = [];
-              
-              // Use forEach to loop through each rescuer
+              let recommendedRescuers = [];
+              let otherRescuers = [];
+        
               Object.keys(data).forEach((key) => {
                 const rescuer = { id: key, ...data[key] };
-                // Log each adminMobileNumber
-                
-                // Check if the rescuer's adminMobileNumber matches
                 if (rescuer.adminMobileNumber === adminMobileNumber) {
-                  filteredRescuers.push(rescuer); // Add matching rescuer to the array
+                  if (rescuer.city === reportCity) {
+                    recommendedRescuers.push({ ...rescuer, recommended: true });
+                  } else {
+                    otherRescuers.push({ ...rescuer, recommended: false });
+                  }
                 }
               });
-              
-              // Log filtered rescuers
-              setRescuers(filteredRescuers);
+        
+              // Combine lists: Recommended first, then others
+              const sortedRescuers = [...recommendedRescuers, ...otherRescuers];
+        
+              // Log to console
+              console.log(reportCity);
+              console.log("Recommended Rescuers:", recommendedRescuers);
+              console.log("Other Rescuers:", otherRescuers);
+              console.log("Final Rescuer List:", sortedRescuers);
+        
+              setRescuers(sortedRescuers);
             }
           });
         };
         
+        
         const handleAssign = (reportId, reportCity) => {
           setSelectedReportId(reportId);
-          fetchRescuers(reportCity); // Pass the city of the report
+          fetchRescuers(reportCity); // Pass city to filter rescuers
           setModalVisible(true);
         };
+        
         
         const assignRescuer = (rescuerMobileNumber) => {
           if (!selectedReportId || !rescuerMobileNumber) return;
@@ -236,7 +245,7 @@ const SkeletonLoader = () => (
                         </TouchableOpacity>
                         <TouchableOpacity
                           style={styles.assignButton}
-                          onPress={() => handleAssign(item.id)}
+                          onPress={() => handleAssign(item.id, item.city)}
                         >
                           <Text style={styles.assignButtonText}>Assign</Text>
                         </TouchableOpacity>
@@ -261,13 +270,19 @@ const SkeletonLoader = () => (
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                       <TouchableOpacity
-                        style={styles.rescuerButton}
+                        style={[
+                          styles.rescuerButton,
+                          item.recommended && { backgroundColor: '#E0F7FA' }, // Light blue for recommended
+                        ]}
                         onPress={() => assignRescuer(item.mobileNumber)}
                       >
-                        <Text style={styles.rescuerText}>{item.name} ({item.mobileNumber})</Text>
+                        <Text style={[styles.rescuerText, item.recommended && { fontWeight: 'bold' }]}>
+                          {item.name} ({item.mobileNumber}) {item.recommended ? " - Recommended" : ""}
+                        </Text>
                       </TouchableOpacity>
                     )}
                   />
+
                   <TouchableOpacity onPress={() => setModalVisible(false)}>
                     <Text style={styles.closeButton}>Close</Text>
                   </TouchableOpacity>
@@ -284,10 +299,10 @@ const Rescue = ({ navigation }) => {
         
   return (
     <View style={styles.container}>
-      {/* Custom Tab Bar */}
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      
+      {/* <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
               <Icon name="arrow-back" size={24} color="#fff" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
       <View style={styles.tabContainer}>
         <TouchableOpacity 
           style={[styles.tab, activeTab === 'completed' && styles.activeTab]} 
@@ -350,7 +365,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   activeTab: {
-    backgroundColor: 'blue',
+    backgroundColor: '#004D40',
   },
   tabText: {
     color: 'black',

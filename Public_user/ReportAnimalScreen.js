@@ -56,6 +56,7 @@ const ReportAnimalScreen = ({ navigation, route }) => {
   const [location, setLocation] = useState('');
   const [animalLocation, setAnimalLocation] = useState(''); // Updated to use dropdown
   const [animalState, setAnimalState] = useState(''); // Updated to use dropdown
+  const [submitted, setSubmitted] = useState(false);
 
 
   useEffect(() => {
@@ -225,6 +226,7 @@ const ReportAnimalScreen = ({ navigation, route }) => {
         setAlertVisible(true);
         setLoading(false);
         await sendNotification();
+        setSubmitted(true);
 
     } catch (error) {
         console.error('Error submitting report:', error);
@@ -329,13 +331,18 @@ const ReportAnimalScreen = ({ navigation, route }) => {
             </Picker>
           </View>
 
-        {loading ? (
-          <ActivityIndicator size="large" color="#004d40" />
-        ) : (
-          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-            <Text style={styles.submitButtonText}>Submit</Text>
-          </TouchableOpacity>
-        )}
+          {loading ? (
+  <ActivityIndicator size="large" color="#004d40" />
+) : (
+  <TouchableOpacity
+    style={[styles.submitButton, (submitted || loading) && styles.disabledButton]}
+    onPress={handleSubmit}
+    disabled={submitted || loading}
+  >
+    <Text style={styles.submitButtonText}>Submit</Text>
+  </TouchableOpacity>
+)}
+
       </View>
       </ScrollView>
       <CustomAlertMessage
@@ -479,6 +486,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 20,
+  },
+  disabledButton: {
+    backgroundColor: "gray", // Change color to indicate disabled state
+    opacity: 0.5,
   },
   submitButtonText: {
     color: '#fff',

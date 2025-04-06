@@ -73,12 +73,14 @@ const CustomHeader = ({ navigation }) => {
 
   return (
     <View style={styles.headerContainer}>
-      {/* Logout Button */}
-      <Text style={styles.headerTitlet}>PRAN ResQ</Text>
-      <TouchableOpacity onPress={handleLogout}>
-        <Text style={styles.headerLogout}>Logout</Text>
-      </TouchableOpacity>
-    </View>
+  {/* Title on the left */}
+  <Text style={styles.headerTitle}>PRAN ResQ</Text>
+
+  {/* Logout button on the right */}
+  <TouchableOpacity onPress={handleLogout}>
+    <Text style={styles.headerLogout}>Logout</Text>
+  </TouchableOpacity>
+</View>
   );
 };
 
@@ -121,18 +123,18 @@ const AppNavigator = () => (
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between', // Ensures title is left & logout is right
+    alignItems: 'center',
     paddingTop: 30,
     backgroundColor: '#004D40',
     paddingBottom: 10,
-    paddingRight: 20,
+    paddingHorizontal: 20, // Ensures spacing on both sides
   },
-  headerTitlet: {
+  headerTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#FFFFFF', // White text
-    fontFamily: 'CustomFont', // Use your desired font
-    paddingRight: 150,
+    color: '#FFFFFF',
+    fontFamily: 'CustomFont',
   },
   headerLogout: {
     color: '#FFFFFF',

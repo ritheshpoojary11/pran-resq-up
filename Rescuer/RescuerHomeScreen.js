@@ -69,10 +69,7 @@ const RescuerHomeScreen = ({ navigation }) => {
 
       <Text style={styles.slogan}>Protecting Wildlife, Preserving Nature.</Text>
       
-      <View style={styles.searchBar}>
-        <Icon name="search" size={20} color="#999999" style={styles.searchIcon} />
-        <TextInput placeholder="Search..." placeholderTextColor="#CCCCCC" style={styles.searchInput} />
-      </View>
+      
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <FlatList
@@ -161,6 +158,7 @@ const styles = StyleSheet.create({
     fontSize: width * 0.05, // Responsive font size
     marginTop: height * 0.05,
     fontFamily: 'CustomFont',
+    paddingBottom:'20%',
   },
   scrollViewContent: {
     paddingBottom: height * 0.1,

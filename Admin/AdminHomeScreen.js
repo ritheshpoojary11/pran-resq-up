@@ -9,7 +9,6 @@ const imageMap = {
   'reports.png': require('../assets/report.png'),
   'pawprint.png': require('../assets/pawprint.png'),
   'quickaccess.png': require('../assets/access.png'),
-
 };
 
 const AdminHomeScreen = ({ navigation }) => {
